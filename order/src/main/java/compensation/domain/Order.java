@@ -61,20 +61,15 @@ public class Order  {
 
     @PostPersist
     public void onPostPersist(){
-    Inventory inventory = OrderApplication.applicationContext
-        .getBean(compensation.external.InventoryService.class)
-        .checkStock(get??);
-
 
         OrderPlaced orderPlaced = new OrderPlaced(this);
         orderPlaced.publishAfterCommit();
+    }
 
-
-
+    @PreRemove
+    public void onPreRemove() {
         OrderCancelled orderCancelled = new OrderCancelled(this);
         orderCancelled.publishAfterCommit();
-
-    
     }
 
     public static OrderRepository repository(){
@@ -99,14 +94,15 @@ public class Order  {
         /** Example 2:  finding and process
         
 
-        repository().findById(outOfStock.get???()).ifPresent(order->{
+        
+        */
+
+        repository().findById(Long.valueOf(outOfStock.getOrderId())).ifPresent(order->{
             
-            order // do something
+            order.setStatus("Order Cancelled");
             repository().save(order);
 
-
          });
-        */
 
         
     }
